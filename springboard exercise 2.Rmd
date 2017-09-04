@@ -1,0 +1,50 @@
+---
+output:
+  html_document: default
+---
+
+# Data wrangling exercise 
+# Exercise number two
+
+# set up the environment
+```{r}
+library(tidyr)
+library(dplyr)
+library(readxl)
+```
+## 1.  Read the document from downloads to R
+```{r}
+titanic<-read_excel("/Users/paulcarson/Downloads/titanic3.xls")
+```
+
+## 2.  Embarked
+###substitute S for blank values in embarked column 
+```{r}
+titanic$embarked[titanic$embarked==""]<-"S"
+```
+## 3. Age
+##calculate mean age of passengers
+### substitute mean age for na values
+```{r}
+MeanAge<-mean(titanic$age, na.rm=TRUE)
+
+AgeCheck<- ifelse(is.na(titanic$age) ,MeanAge,titanic$age)
+```
+#### some consideration could be made for not using the average age to substitute for n/a values.  It would seem likely younger passengers would have a greater chance of surviving than older passengers. Perhaps also looking at the known age of survivors, known age of those who died and using a pro rata approach would be a more accurate representation
+
+## 4.  
+## fill in None for missing values in boat column
+```{r}
+titanic$boat<- ifelse(is.na(titanic$boat),"None",titanic$boat)
+```
+## 5.  Cabin 
+##add a column identifying if a passenger had a cabin number(1) or not (0)
+
+titanic_revised<- titanic %>% mutate(has_cabin_number=ifelse(titanic$cabin=="",0,1))
+##write final, clean version to csv version titled titanic_clean
+```{r}
+titanic<- titanic %>% mutate(has_cabin_number=ifelse(titanic$cabin=="",0,1))
+write.csv(titanic,"titanic_clean.csv")
+```
+
+
